@@ -11,7 +11,6 @@
 #include <thread>
 #include <algorithm>
 #include <cctype>
-#include <conio.h>
 #include <random>
 #include <atomic>
 
