@@ -11,7 +11,6 @@
 #include <thread>
 #include <algorithm>
 #include <cctype>
-#include <windows.h>
 #include <conio.h>
 #include <random>
 #include <atomic>
@@ -51,7 +50,8 @@ void Button();
 int main () {
     Terminals();
 
-    std::system("pause");
+    std::cout << "Press Enter to exit...";
+    std::cin.get();
 
     return 0;
 }
