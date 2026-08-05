@@ -1,0 +1,43 @@
+name: Build Multi-Platform Binaries
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch: # Allows you to run this manually from GitHub
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    - name: Checkout repository code
+      uses: actions/checkout@v4
+
+    # --- LINUX COMPILATION ---
+    - name: Compile C++ for Linux
+      if: matrix.os == 'ubuntu-latest'
+      run: g++ -O3 Multi-tool.cpp -o Multi-tool_linux -static
+
+    # --- WINDOWS COMPILATION ---
+    - name: Compile C++ for Windows
+      if: matrix.os == 'windows-latest'
+      run: g++ -O3 Multi-tool.cpp -o Multi-tool_windows.exe -static-libgcc -static-libstdc++ -static
+
+    # --- MACOS COMPILATION ---
+    - name: Compile C++ for macOS
+      if: matrix.os == 'macos-latest'
+      run: g++ -O3 Multi-tool.cpp -o Multi-tool_mac -std=c++17
+
+    # --- UPLOAD FINISHED FILES ---
+    - name: Upload Finished Binary
+      uses: actions/upload-artifact@v4
+      with:
+        name: program-${{ matrix.os }}
+        path: |
+          Multi-tool_linux
+          Multi-tool_windows.exe
+          Multi-tool_mac
