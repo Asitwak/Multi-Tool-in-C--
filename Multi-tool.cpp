@@ -14,6 +14,27 @@
 #include <conio.h>
 #include <random>
 #include <atomic>
+
+#ifdef _WIN32
+#include <conio.h> 
+#else
+#include <sys/select.h>
+#include <termios.h>
+#include <unistd.h>
+#endif
+
+int universal_kbhit() {
+#ifdef _WIN32
+    return _kbhit();
+#else
+    struct timeval tv = { 0L, 0L };
+    fd_set fds;
+    FD_ZERO(&fds);
+    FD_SET(0, &fds);
+    return select(1, &fds, NULL, NULL, &tv) > 0;
+#endif
+}
+
 #define PI 3.1415926535897932384626433832795028841971693993
 
 std::string Place_Holder_Value;
@@ -650,8 +671,9 @@ void Rock_Paper_Scissors_Game() {
                 break;
             }
 
-            if (_kbhit()) {
-                char ch = _getch();
+            if (universal_kbhit()) {
+                char ch;
+                std::cin >> ch;
                 
                 if (ch == '\r' || ch == '\n') {
                     break;
